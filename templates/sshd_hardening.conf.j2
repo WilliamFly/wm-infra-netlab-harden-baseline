@@ -1,0 +1,12 @@
+# Managed by Ansible — harden-baseline role. Do not edit by hand.
+Port {{ harden_ssh_port }}
+PermitRootLogin {{ harden_ssh_permit_root_login }}
+PasswordAuthentication {{ harden_ssh_password_authentication }}
+PubkeyAuthentication yes
+MaxAuthTries {{ harden_ssh_max_auth_tries }}
+X11Forwarding no
+ClientAliveInterval 300
+ClientAliveCountMax 2
+{% if harden_ssh_allow_users | length > 0 %}
+AllowUsers {{ harden_ssh_allow_users | join(' ') }}
+{% endif %}

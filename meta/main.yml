@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  role_name: harden_baseline
+  author: William Mucha
+  description: CIS-leaning baseline hardening for Ubuntu servers (SSH, ufw, fail2ban, unattended-upgrades, users)
+  license: MIT
+  min_ansible_version: "2.15"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - noble
+  galaxy_tags:
+    - security
+    - hardening
+    - ssh
+    - firewall
+    - fail2ban
+dependencies: []

@@ -1,0 +1,13 @@
+---
+# Ubuntu 24.04 sshd Includes /etc/ssh/sshd_config.d/*.conf, so we drop a
+# fragment in rather than editing the main file. Cleaner and upgrade-safe.
+
+- name: Deploy hardened SSH drop-in
+  ansible.builtin.template:
+    src: sshd_hardening.conf.j2
+    dest: /etc/ssh/sshd_config.d/50-harden.conf
+    mode: "0644"
+    owner: root
+    group: root
+    validate: "sshd -t -f %s"
+  notify: Restart ssh

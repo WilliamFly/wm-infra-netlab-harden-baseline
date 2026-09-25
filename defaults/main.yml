@@ -1,0 +1,33 @@
+---
+# harden-baseline — every knob lives here. Override in the playbook,
+# group_vars, or host_vars; never edit tasks/ to change behaviour.
+
+# --- User management ---
+harden_admin_user: deploy
+harden_admin_user_groups: [sudo]
+harden_admin_ssh_keys: []            # list of public-key strings; [] = leave as-is
+harden_admin_passwordless_sudo: true # true is lab-convenient; set false for stricter posture
+
+# --- SSH hardening ---
+harden_ssh_port: 22
+harden_ssh_permit_root_login: "no"
+harden_ssh_password_authentication: "no"
+harden_ssh_max_auth_tries: 3
+harden_ssh_allow_users: []           # [] = no AllowUsers restriction
+
+# --- Firewall (ufw) ---
+harden_ufw_default_incoming: deny
+harden_ufw_default_outgoing: allow
+harden_ufw_allowed_ports:
+  - { port: "22", proto: "tcp", comment: "SSH" }
+
+# --- Automatic updates ---
+harden_unattended_upgrades: true
+harden_auto_reboot: false
+harden_auto_reboot_time: "03:00"
+
+# --- Brute-force protection (fail2ban) ---
+harden_fail2ban_enabled: true
+harden_fail2ban_bantime: "1h"
+harden_fail2ban_findtime: "10m"
+harden_fail2ban_maxretry: 5

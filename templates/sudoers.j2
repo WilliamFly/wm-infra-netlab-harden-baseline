@@ -1,0 +1,2 @@
+# Managed by Ansible — harden-baseline role.
+{{ harden_admin_user }} ALL=(ALL) {{ 'NOPASSWD:ALL' if harden_admin_passwordless_sudo else 'ALL' }}

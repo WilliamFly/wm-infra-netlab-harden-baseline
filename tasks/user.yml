@@ -1,0 +1,28 @@
+---
+# Runs BEFORE ssh.yml on purpose: the admin key must be in place before we
+# turn off password authentication, otherwise you lock yourself out.
+
+- name: Ensure admin user exists
+  ansible.builtin.user:
+    name: "{{ harden_admin_user }}"
+    groups: "{{ harden_admin_user_groups }}"
+    append: true
+    shell: /bin/bash
+    state: present
+
+- name: Install authorized SSH keys for admin user
+  ansible.posix.authorized_key:
+    user: "{{ harden_admin_user }}"
+    key: "{{ item }}"
+    state: present
+  loop: "{{ harden_admin_ssh_keys }}"
+  when: harden_admin_ssh_keys | length > 0
+
+- name: Configure sudo for admin user
+  ansible.builtin.template:
+    src: sudoers.j2
+    dest: "/etc/sudoers.d/90-{{ harden_admin_user }}"
+    mode: "0440"
+    owner: root
+    group: root
+    validate: "visudo -cf %s"

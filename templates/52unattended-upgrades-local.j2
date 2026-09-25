@@ -1,0 +1,5 @@
+// Managed by Ansible — harden-baseline role.
+Unattended-Upgrade::Automatic-Reboot "{{ 'true' if harden_auto_reboot else 'false' }}";
+{% if harden_auto_reboot %}
+Unattended-Upgrade::Automatic-Reboot-Time "{{ harden_auto_reboot_time }}";
+{% endif %}
