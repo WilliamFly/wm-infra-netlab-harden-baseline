@@ -15,7 +15,7 @@ rather than copied into each consuming repo.
 |---|---|
 | Users | Creates an admin user, installs SSH keys, configures sudo |
 | SSH | Drops in a hardened `sshd_config.d/50-harden.conf` (no root login, no password auth, capped auth tries) |
-| Firewall | Installs and enables `ufw`, default-deny incoming / allow outgoing, opens only configured ports |
+| Firewall | Installs and enables `ufw`, default-deny incoming / allow outgoing, opens only configured ports (optionally scoped to a source subnet) |
 | Updates | Enables `unattended-upgrades`, configurable auto-reboot policy |
 | Brute-force protection | Installs and configures `fail2ban` for sshd |
 
@@ -52,6 +52,32 @@ collections:
   - name: community.general   # ufw module
   - name: ansible.posix       # authorized_key module
 ```
+
+## Firewall ports and scoping to a source subnet
+
+`harden_ufw_allowed_ports` is a list of ports to open. By default each
+entry is open to any source ("Anywhere"):
+
+```yaml
+harden_ufw_allowed_ports:
+  - { port: "22", proto: "tcp", comment: "SSH" }
+```
+
+To restrict a port to a specific subnet or host, add a `from` key —
+it's passed through as the rule's source (`src`):
+
+```yaml
+harden_ufw_allowed_ports:
+  - { port: "22", proto: "tcp", comment: "SSH" }
+  - { port: "5432", proto: "tcp", from: "10.0.2.0/24", comment: "Postgres - private-net only" }
+```
+
+| Key | Required | Meaning |
+|---|---|---|
+| `port` | yes | Port number, e.g. `"5432"` |
+| `proto` | yes | `tcp` or `udp` |
+| `comment` | no | Shown in `ufw status verbose` |
+| `from` | no | CIDR or single IP to restrict the rule's source to. Omit to leave the port open to any source. |
 
 ## Requirements
 

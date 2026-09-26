@@ -15,13 +15,12 @@
     direction: outgoing
     policy: "{{ harden_ufw_default_outgoing }}"
 
-# Allow rules are added BEFORE enabling, so SSH survives the switch to
-# default-deny. Order matters here — reversing it locks you out.
 - name: Allow configured ports
   community.general.ufw:
     rule: allow
     port: "{{ item.port }}"
     proto: "{{ item.proto }}"
+    src: "{{ item.from | default(omit) }}"
     comment: "{{ item.comment | default(omit) }}"
   loop: "{{ harden_ufw_allowed_ports }}"
 
